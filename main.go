@@ -64,4 +64,37 @@ func main() {
 	log.Print("Is canceled : " + strconv.FormatBool(ctx6.Err() == context.Canceled))
 	log.Print("Is Deadline Exceeded : " + strconv.FormatBool(ctx6.Err() == context.DeadlineExceeded))
 
+	log.Print("")
+
+	log.Print("Example #7: Simple Background context with Deadline specified in duration")
+	timeout := 1 * time.Second
+	ctx7, _ := context.WithTimeout(ctx1, timeout)
+	log.Print(ctx7)
+	time.Sleep(2 * time.Second)
+	log.Print(ctx6.Err())
+	log.Print("Is canceled : " + strconv.FormatBool(ctx6.Err() == context.Canceled))
+	log.Print("Is Deadline Exceeded : " + strconv.FormatBool(ctx6.Err() == context.DeadlineExceeded))
+
+	log.Print("")
+
+	log.Print("Example #8: Simple Background context with Deadline specified in duration (with Channels)")
+	timeout2 := 1 * time.Second
+	ctx8, _ := context.WithTimeout(ctx1, timeout2)
+	time.Sleep(2 * time.Second)
+
+	ctx9 := context.WithValue(ctx8, "whatever", 123)
+	fn(ctx8)
+	fn(ctx9)
+
+}
+
+func fn(ctx context.Context) {
+	select {
+	case <-time.After(2 * time.Second):
+		log.Print("after 2 sec")
+	case <-time.After(1 * time.Second):
+		log.Print("after 1 sec")
+	case <-ctx.Done():
+		log.Print("Context is Done")
+	}
 }
