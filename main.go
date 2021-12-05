@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"strconv"
+	"time"
 )
 
 func main() {
@@ -36,4 +37,28 @@ func main() {
 	cancelFunc() // Canceling the context by calling cancel function
 	log.Print(ctx4.Err())
 	log.Print("Is canceled : " + strconv.FormatBool(ctx4.Err() == context.Canceled))
+
+	log.Print("")
+
+	log.Print("Example #5: Simple Background context with Deadline specified in exact time")
+	deadlineTimestamp := time.Now().Add(1 * time.Second) // Time after 1 second
+	ctx5, _ := context.WithDeadline(ctx1, deadlineTimestamp)
+	log.Print(ctx5)
+	time.Sleep(2 * time.Second)
+	log.Print(ctx5.Err())
+	log.Print("Is canceled : " + strconv.FormatBool(ctx5.Err() == context.Canceled))
+	log.Print("Is Deadline Exceeded : " + strconv.FormatBool(ctx5.Err() == context.DeadlineExceeded))
+
+	log.Print("")
+
+	log.Print("Example #6: Simple Background context with Deadline specified in exact time but canceled instead")
+	deadlineTimestamp = time.Now().Add(1 * time.Second) // Time after 1 second
+	ctx6, cancelFunc := context.WithDeadline(ctx1, deadlineTimestamp)
+	log.Print(ctx6)
+	cancelFunc()
+	time.Sleep(2 * time.Second)
+	log.Print(ctx6.Err())
+	log.Print("Is canceled : " + strconv.FormatBool(ctx6.Err() == context.Canceled))
+	log.Print("Is Deadline Exceeded : " + strconv.FormatBool(ctx6.Err() == context.DeadlineExceeded))
+
 }
