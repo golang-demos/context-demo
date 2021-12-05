@@ -55,6 +55,9 @@ func main() {
 	deadlineTimestamp = time.Now().Add(1 * time.Second) // Time after 1 second
 	ctx6, cancelFunc := context.WithDeadline(ctx1, deadlineTimestamp)
 	log.Print(ctx6)
+	deadline, ok := ctx6.Deadline()
+	log.Print("Deadline Timestamp : " + deadline.String())
+	log.Print("Is Deadline set? : " + strconv.FormatBool(ok))
 	cancelFunc()
 	time.Sleep(2 * time.Second)
 	log.Print(ctx6.Err())
